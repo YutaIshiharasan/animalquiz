@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>この動物だーれだ？クイズ 🐾</title>
+    <style>
+        body {
+            font-family: 'Hiragino Kaku Gothic Pro', 'Meiryo', sans-serif;
+            background-color: #e8f5e9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .quiz-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+        }
+        .image-box {
+            font-size: 80px;
+            background-color: #f1f8e9;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 3px dashed #4caf50;
+        }
+        h1 { font-size: 1.4rem; color: #2e7d32; margin-bottom: 20px; }
+        .choices {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        button {
+            padding: 15px 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: 2px solid #4caf50;
+            border-radius: 10px;
+            background-color: white;
+            color: #2e7d32;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background-color: #4caf50;
+            color: white;
+        }
+        #message {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            min-height: 1.5em;
+        }
+        .next-btn {
+            margin-top: 20px;
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            display: none;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h1>この「体の一部」の持ち主は？</h1>
+    <div class="image-box" id="part-emoji">🐘</div>
+    <div class="choices" id="choice-buttons">
+        </div>
+    <div id="message"></div>
+    <button class="next-btn" id="next-btn" onclick="nextQuestion()">次の問題へ！</button>
+</div>
+
+<script>
+    const quizData = [
+        { part: "👂", ans: "ゾウ", options: ["ゾウ", "ウサギ", "コアラ", "ネズミ"] },
+        { part: "🦒", ans: "キリン", options: ["シカ", "キリン", "ウマ", "ダチョウ"] },
+        { part: "🦓", ans: "シマウマ", options: ["トラ", "ヒョウ", "シマウマ", "ウシ"] },
+        { part: "👃", ans: "ブタ", options: ["イヌ", "ブタ", "カバ", "クマ"] },
+        { part: "🦘", ans: "カンガルー", options: ["ネコ", "カンガルー", "ウサギ", "サル"] }
+    ];
+
+    let currentIdx = 0;
+
+    function loadQuestion() {
+        const q = quizData[currentIdx];
+        document.getElementById('part-emoji').textContent = q.part;
+        const container = document.getElementById('choice-buttons');
+        container.innerHTML = '';
+        document.getElementById('message').textContent = '';
+        document.getElementById('next-btn').style.display = 'none';
+
+        q.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.textContent = opt;
+            btn.onclick = () => checkAnswer(opt);
+            container.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selected) {
+        const correct = quizData[currentIdx].ans;
+        const msg = document.getElementById('message');
+        if (selected === correct) {
+            msg.textContent = "正解！ ✨ 素晴らしい！";
+            msg.style.color = "#4caf50";
+        } else {
+            msg.textContent = "残念！ 正解は「" + correct + "」でした 😢";
+            msg.style.color = "#f44336";
+        }
+        document.getElementById('next-btn').style.display = 'block';
+        // 二重クリック防止
+        const btns = document.querySelectorAll('.choices button');
+        btns.forEach(b => b.disabled = true);
+    }
+
+    function nextQuestion() {
+        currentIdx++;
+        if (currentIdx < quizData.length) {
+            loadQuestion();
+        } else {
+            document.querySelector('.quiz-container').innerHTML = "<h1>全問終了！お疲れ様でした！🐾</h1><button onclick='location.reload()'>もう一度あそぶ</button>";
+        }
+    }
+
+    loadQuestion();
+</script>
+
+</body>
+</html>
